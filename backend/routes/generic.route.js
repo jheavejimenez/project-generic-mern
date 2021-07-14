@@ -29,7 +29,7 @@ router.delete('/delete/:id', async (req, res) =>{
 
   }catch(err){
     res.status(400).json('error')
-
+    
   }
 
 });
