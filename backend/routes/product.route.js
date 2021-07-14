@@ -18,16 +18,6 @@ router.route('/add').post((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.delete('/delete/:id', async (req, res) =>{
-    try{
-        await Product.findByIdAndDelete(req.params.id)
-        res.json('Product deleted!')
-    }catch(err){
-        res.status(400).json('error')
-    }
-
-});
-
 router.put('/update/:id', async (req, res) => {
   try{
     const update = {
@@ -44,5 +34,16 @@ router.put('/update/:id', async (req, res) => {
   }
 
 });
+
+router.delete('/delete/:id', async (req, res) =>{
+    try{
+        await Product.findByIdAndDelete(req.params.id)
+        res.json('Product deleted!')
+    }catch(err){
+        res.status(400).json('error')
+    }
+
+});
+
 
 module.exports = router;

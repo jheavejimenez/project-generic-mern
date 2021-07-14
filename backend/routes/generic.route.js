@@ -22,18 +22,6 @@ router.route('/add').post((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.delete('/delete/:id', async (req, res) =>{
-  try{
-    await Generic.findByIdAndDelete(req.params.id)
-    res.json('Generic deleted!')
-
-  }catch(err){
-    res.status(400).json('error')
-    
-  }
-
-});
-
 router.put('/update/:id', async (req, res) => {
   try{
     const update = {
@@ -42,6 +30,18 @@ router.put('/update/:id', async (req, res) => {
     }   
     const generic = await Generic.findByIdAndUpdate(req.params.id, update, { new: true }); // return new updated product
     res.json(generic)
+  }catch(err){
+    res.status(400).json('error')
+    
+  }
+
+});
+
+router.delete('/delete/:id', async (req, res) =>{
+  try{
+    await Generic.findByIdAndDelete(req.params.id)
+    res.json('Generic deleted!')
+
   }catch(err){
     res.status(400).json('error')
     
