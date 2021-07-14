@@ -13,9 +13,7 @@ router.get('/', async (req, res) =>  {
 });
 
 router.route('/add').post((req, res) => {
-  const username = req.body.username;
-
-  const newUser = new User({username});
+  const newUser = new User(req.body);
 
   newUser.save()
     .then(() => res.json('User added!'))
@@ -43,7 +41,7 @@ router.put('/update/:id', async (req, res) => {
 router.delete('/delete/:id', async (req, res) =>{
   try{
     await User.findByIdAndDelete(req.params.id)
-    res.json('Generic deleted!')
+    res.json('User deleted!')
 
   }catch(err){
     res.status(400).json('error')
