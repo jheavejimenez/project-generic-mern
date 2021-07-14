@@ -21,7 +21,7 @@ router.route('/add').post((req, res) => {
 router.delete('/delete/:id', async (req, res) =>{
     try{
         await Product.findByIdAndDelete(req.params.id)
-        res.json()
+        res.json('Product deleted!')
     }catch(err){
         res.status(400).json('error')
     }
@@ -42,6 +42,7 @@ router.put('/update/:id', async (req, res) => {
   }catch(err){
       res.status(400).json('error')
   }
+
 });
 
 module.exports = router;
