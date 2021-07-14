@@ -30,6 +30,8 @@ router.put('/update/:id', async (req, res) => {
       password: req.body.password,
 
     }
+    const user = await User.findByIdAndUpdate(req.params.id, update, { new: true }); // return new updated product
+    res.json(user)
 
   }catch(err){
     res.status(400).json('error')
