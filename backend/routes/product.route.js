@@ -2,7 +2,7 @@ const router = require('express').Router();
 let Product = require('../models/products.model');
 
 router.get('/', async (req, res) => {
-    try {
+    try{
       const products = await Product.find();
       res.json(products)
     }catch(err) {
@@ -29,7 +29,7 @@ router.delete('/delete/:id', async (req, res) =>{
 });
 
 router.put('/update/:id', async (req, res) => {
-  try {
+  try{
     const update = {
         genericName: req.body.genericName,
         brandName: req.body.brandName,
