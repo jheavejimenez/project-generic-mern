@@ -2,6 +2,7 @@ import React, {useState, useReducer, useEffect} from "react"
 import {findGenerics, createGeneric, updateGeneric, deleteGeneric} from "../repository/GenericRepository";
 import {findDrugs, createDrug, updateDrug, deleteDrug} from "../repository/DrugRepository";
 import styled from 'styled-components'
+import Scanner from "./scanner";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -25,6 +26,7 @@ function ModelScreen({modelName, fields, find, create, update, destroy}) {
   const [changeFormActive, setChangeFormActive] = useState(false);
   const [selectedObject, setSelectedObject] = useState(null);
   const [fieldValues, dispatch] = useReducer(reducer, {});
+  const [camera, setCamera] = useState(false);
 
   const refresh = async () => {
     const response = await find(query);
@@ -57,13 +59,13 @@ function ModelScreen({modelName, fields, find, create, update, destroy}) {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!selectedObject) {
-      const data = fields.map(field => fieldValues[getFirstField(field)]);
+      const data = fields.map(field => fieldValues[getFirstField(field.name)]);
       await create(...data);
       dispatch({type: "clear"});
       setChangeFormActive(false);
       return await refresh();
     }
-    const data = fields.map(field => fieldValues[getFirstField(field)]);
+    const data = fields.map(field => fieldValues[getFirstField(field.name)]);
     await update(selectedObject._id, ...data);
     dispatch({type: "clear"});
     setChangeFormActive(false);
@@ -84,13 +86,26 @@ function ModelScreen({modelName, fields, find, create, update, destroy}) {
           <div>
             {changeFormActive ? (
               <form onSubmit={handleSubmit}>
-                {fields.map((fieldName, index) => (
-                  <div key={index}>
-                    <div>{getFirstField(fieldName)}</div>
-                    <TextInput
-                      type={"text"}
-                      value={fieldValues[getFirstField(fieldName)]}
-                      onChange={e => handleTextChange(getFirstField(fieldName), e.target.value)}/>
+                {fields.map((field, index) => (
+                  <div style={{display: "flex", flexDirection: "column"}} key={index}>
+                    <div>{getFirstField(field.name)}</div>
+                    <div style={{display: "flex", flexDirection: "row"}}>
+                      <TextInput
+                        type={"text"}
+                        value={fieldValues[getFirstField(field.name)]}
+                        onChange={e => handleTextChange(getFirstField(field.name), e.target.value)}/>
+                      {field.type === "barcode" && (
+                        <div style={{flexDirection: 'column'}}>
+                          <BarcodeIcon onClick={() => setCamera(!camera)} active={camera}>!i||!</BarcodeIcon>
+                        </div>
+                      )}
+                    </div>
+                    {field.type === "barcode" && camera && (
+                      <Scanner onDetected={result => {
+                        handleTextChange(getFirstField(field.name), result);
+                        setCamera(false);
+                      }}/>
+                    )}
                   </div>
                 ))}
                 <SubmitButton type={"submit"}>Save</SubmitButton>
@@ -117,21 +132,21 @@ function ModelScreen({modelName, fields, find, create, update, destroy}) {
                 ) : (
                   <Table>
                     <TableHeader>
-                      <div style={{flex: 1}}>ID</div>
+                      <div style={{flex: 2}}>ID</div>
                       {fields.map(field => (
-                        <div style={{flex: 1}} key={field}>{getFirstField(field)}</div>
+                        <div style={{flex: 1}} key={field}>{getFirstField(field.name)}</div>
                       ))}
                       <div style={{flex: 1}}>Actions</div>
                     </TableHeader>
                     {objects.map(object => (
                       <TableRow key={object._id}>
-                        <a href={"#"} style={{flex: 1}} onClick={() => {
+                        <a href={"#"} style={{flex: 2, color: "blue"}} onClick={() => {
                           setSelectedObject(object);
                           dispatch({
                             type: "initialize",
                             data: Object.fromEntries(fields.map(field => [
-                              getFirstField(field),
-                              getObjectFieldId(object, field)
+                              getFirstField(field.name),
+                              getObjectFieldId(object, field.name)
                             ]))
                           });
                           setChangeFormActive(true);
@@ -139,7 +154,7 @@ function ModelScreen({modelName, fields, find, create, update, destroy}) {
                           {object._id}
                         </a>
                         {fields.map(field => (
-                          <div key={field} style={{flex: 1}}>{getObjectField(object, field)}</div>
+                          <div key={field} style={{flex: 1}}>{getObjectField(object, field.name)}</div>
                         ))}
                         <a href={"#"} style={{flex: 1, color: 'red'}} onClick={async () => {
                           if (window.confirm("Are you sure you want to delete?")) {
@@ -180,6 +195,20 @@ const TextInput = styled.input`
 padding: 8px;
 border: 1px solid #aaa;
 border-radius: 4px;
+`;
+
+const BarcodeIcon = styled.div`
+margin: 0 16px;
+padding: 8px;
+background-color: black;
+color: white;
+flex: 0;
+border-radius: 8px;
+cursor: pointer;
+
+${props => props.active && `
+background-color: #00A2FF;
+`}
 `;
 
 const Button = styled.button`
@@ -238,7 +267,9 @@ function Admin() {
     (
       <ModelScreen
         modelName={"Generic"}
-        fields={["genericName"]}
+        fields={[
+          {"name": "genericName"},
+        ]}
         find={findGenerics}
         create={createGeneric}
         update={updateGeneric}
@@ -248,7 +279,13 @@ function Admin() {
     (
       <ModelScreen
         modelName={"Drug"}
-        fields={["brandName", "genericName__genericName", "price", "dosage",]}
+        fields={[
+          {"name": "brandName"},
+          {"name": "genericName__genericName"},
+          {"name": "barcode", "type": "barcode"},
+          {"name": "price"},
+          {"name": "dosage"},
+        ]}
         find={findDrugs}
         create={createDrug}
         update={updateDrug}

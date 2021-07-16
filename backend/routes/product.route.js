@@ -12,6 +12,8 @@ router.route('/').get(async (req, res) => {
       $or: [{
         brandName: {$regex: `${searchQuery}`, $options: 'i'},
       }, {
+        barcode: {$regex: `${searchQuery}`, $options: 'i'},
+      }, {
         genericName: {$in: genericIds}
       }]
     } : {};
@@ -31,9 +33,9 @@ router.route('/').get(async (req, res) => {
 router.route('/:id').put(async (req, res) => {
   try {
     console.log(req.body);
-    const {genericName, brandName, price, dosage} = req.body;
+    const {genericName, brandName, barcode, price, dosage} = req.body;
     console.log(genericName);
-    const update = {genericName, brandName, price, dosage};
+    const update = {genericName, brandName, barcode, price, dosage};
     const product = await Product.findByIdAndUpdate(req.params.id, update, {new: true});
     res.json(product)
   } catch (err) {

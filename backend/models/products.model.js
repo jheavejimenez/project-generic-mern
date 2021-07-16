@@ -20,7 +20,9 @@ const productSchema = new Schema({
         type: String,
         required: true,
     },
-
+    barcode: {
+        type: String,
+    },
 }, {
     timestamps: true,
 });

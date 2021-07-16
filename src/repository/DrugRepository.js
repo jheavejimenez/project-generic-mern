@@ -9,10 +9,11 @@ export async function findDrugs(query) {
 export async function createDrug(
   brandName,
   genericName,
+  barcode,
   price,
   dosage,
 ) {
-  const data = { brandName, genericName, price, dosage};
+  const data = {brandName, genericName, barcode, price, dosage};
   console.log(data);
 
   return await axios.post(`${ApiConfig.url}/api/products`, data);
@@ -29,10 +30,12 @@ export async function updateDrug(
   id,
   brandName,
   genericName,
+  barcode,
   price,
   dosage,
 ) {
-  const data = {brandName, dosage, price, genericName};
+  const data = {brandName, dosage, barcode, price, genericName};
+  console.log(data);
 
   return await axios.put(`${ApiConfig.url}/api/products/${id}`, data);
 }
