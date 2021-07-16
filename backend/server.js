@@ -22,9 +22,9 @@ const userRouter = require('./routes/users.route');
 const productRouter = require('./routes/product.route');
 const genericRouter = require('./routes/generic.route');
 
-app.use('/users', userRouter);
-app.use('/product', productRouter);
-app.use('/generic', genericRouter);
+app.use('/api/users', userRouter);
+app.use('/api/products', productRouter);
+app.use('/api/generics', genericRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
