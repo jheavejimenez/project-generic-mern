@@ -9,7 +9,7 @@ function Login() {
 
   function handleLogin() {
     if (username !== "admin" || password !== "admin") {
-      alert("Incorrect credentials." + username + password);
+      alert("Incorrect credentials.");
       return;
     }
     history.push("/secret-crud");
