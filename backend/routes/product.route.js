@@ -2,10 +2,10 @@ const router = require('express').Router();
 let Product = require('../models/products.model');
 
 router.get('/', async (req, res) => {
-    try{
+    try {
       const products = await Product.find();
       res.json(products)
-    }catch(err) {
+    } catch(err) {
         res.status(400).json('error')
     }
 });
@@ -19,7 +19,7 @@ router.route('/add').post((req, res) => {
 });
 
 router.put('/update/:id', async (req, res) => {
-  try{
+  try {
     const update = {
         genericName: req.body.genericName,
         brandName: req.body.brandName,
@@ -29,17 +29,17 @@ router.put('/update/:id', async (req, res) => {
     const product = await Product.findByIdAndUpdate(req.params.id, update, { new: true }); // return new updated product
     res.json(product)
 
-  }catch(err){
+  } catch(err) {
       res.status(400).json('error')
   }
 
 });
 
 router.delete('/delete/:id', async (req, res) =>{
-    try{
+    try {
         await Product.findByIdAndDelete(req.params.id)
         res.json('Product deleted!')
-    }catch(err){
+    } catch(err) {
         res.status(400).json('error')
     }
 
