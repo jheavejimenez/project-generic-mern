@@ -2,11 +2,11 @@ const router = require('express').Router();
 let Generic = require('../models/generic.model');
 
 router.get('/', async (req, res) => {
-  try{
+  try {
     const generic = await Generic.find();
     res.json(generic)
 
-  }catch(err) {
+  } catch(err) {
     res.status(400).json('error')
   }
 
@@ -23,14 +23,14 @@ router.route('/add').post((req, res) => {
 });
 
 router.put('/update/:id', async (req, res) => {
-  try{
+  try {
     const update = {
         genericName: req.body.genericName,
        
     }   
     const generic = await Generic.findByIdAndUpdate(req.params.id, update, { new: true }); // return new updated product
     res.json(generic)
-  }catch(err){
+  } catch(err) {
     res.status(400).json('error')
     
   }
@@ -38,11 +38,11 @@ router.put('/update/:id', async (req, res) => {
 });
 
 router.delete('/delete/:id', async (req, res) =>{
-  try{
+  try {
     await Generic.findByIdAndDelete(req.params.id)
     res.json('Generic deleted!')
 
-  }catch(err){
+  } catch(err) {
     res.status(400).json('error')
     
   }
