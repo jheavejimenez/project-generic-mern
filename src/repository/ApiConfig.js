@@ -1,3 +1,3 @@
 module.exports = {
-  url: "http://generic.atmosclouds.com",
+  url: "https://generic.atmosclouds.com",
 }
