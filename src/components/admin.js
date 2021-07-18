@@ -20,7 +20,7 @@ function reducer(state, action) {
   }
 }
 
-function ModelScreen({modelName, fields, find, create, update, destroy}) {
+function ModelScreen({modelName, fields, find, create, update, destroy, getObjectDisplay = object => object._id}) {
   const [query, setQuery] = useState("");
   const [objects, setObjects] = useState(null);
   const [changeFormActive, setChangeFormActive] = useState(false);
@@ -41,11 +41,13 @@ function ModelScreen({modelName, fields, find, create, update, destroy}) {
   }
 
   function getObjectField(object, field) {
-    if (field.includes("__")) {
-      const nestedFields = field.split("__");
-      return object[nestedFields[0]][nestedFields[1]]
+    const fieldName = field.name;
+    const transform = field.type === "money" ? value => value.toFixed(2) : value => value;
+    if (fieldName.includes("__")) {
+      const nestedFields = fieldName.split("__");
+      return transform(object[nestedFields[0]][nestedFields[1]])
     }
-    return object[field];
+    return transform(object[fieldName]);
   }
 
   function getObjectFieldId(object, field) {
@@ -79,6 +81,7 @@ function ModelScreen({modelName, fields, find, create, update, destroy}) {
   return (
     <Container>
       <ModelName>{modelName}</ModelName>
+      <hr style={{margin: "16px 0"}} />
       {objects === null ? (
         <div>Loading...</div>
       ) : (
@@ -86,8 +89,11 @@ function ModelScreen({modelName, fields, find, create, update, destroy}) {
           <div>
             {changeFormActive ? (
               <form onSubmit={handleSubmit}>
+                <ObjectName>
+                  {selectedObject ? `Edit ${modelName} ${getObjectDisplay(selectedObject)}` : `Create new ${modelName}`}
+                </ObjectName>
                 {fields.map((field, index) => (
-                  <div style={{display: "flex", flexDirection: "column"}} key={index}>
+                  <div style={{display: "flex", flexDirection: "column", margin: "16px 0"}} key={index}>
                     <div>{getFirstField(field.name)}</div>
                     <div style={{display: "flex", flexDirection: "row"}}>
                       <TextInput
@@ -133,7 +139,7 @@ function ModelScreen({modelName, fields, find, create, update, destroy}) {
                   <Table>
                     <TableHeader>
                       <div style={{flex: 2}}>ID</div>
-                      {fields.map(field => (
+                      {fields.filter(field => !field.hideInListView).map(field => (
                         <div style={{flex: 1}} key={field}>{getFirstField(field.name)}</div>
                       ))}
                       <div style={{flex: 1}}>Actions</div>
@@ -151,10 +157,10 @@ function ModelScreen({modelName, fields, find, create, update, destroy}) {
                           });
                           setChangeFormActive(true);
                         }}>
-                          {object._id}
+                          {getObjectDisplay(object)}
                         </a>
-                        {fields.map(field => (
-                          <div key={field} style={{flex: 1}}>{getObjectField(object, field.name)}</div>
+                        {fields.filter(field => !field.hideInListView).map(field => (
+                          <div key={field} style={{flex: 1}}>{getObjectField(object, field)}</div>
                         ))}
                         <a href={"#"} style={{flex: 1, color: 'red'}} onClick={async () => {
                           if (window.confirm("Are you sure you want to delete?")) {
@@ -183,6 +189,12 @@ margin: 8px;
 
 const ModelName = styled.div`
 font-size: 2em;
+`;
+
+const ObjectName = styled.div`
+font-size: 1.2em;
+margin: 16px 0;
+color: #888;
 `;
 
 const Search = styled.input`
@@ -282,14 +294,15 @@ function Admin() {
         fields={[
           {"name": "brandName"},
           {"name": "genericName__genericName"},
-          {"name": "barcode", "type": "barcode"},
-          {"name": "price"},
+          {"name": "barcode", "type": "barcode", "hideInListView": true},
+          {"name": "price", "type": "money"},
           {"name": "dosage"},
         ]}
         find={findDrugs}
         create={createDrug}
         update={updateDrug}
         destroy={deleteDrug}
+        getObjectDisplay={object => object.barcode || object._id}
       />
     ),
   ]

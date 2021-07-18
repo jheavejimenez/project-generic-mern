@@ -17,7 +17,7 @@ router.route('/').get(async (req, res) => {
         genericName: {$in: genericIds}
       }]
     } : {};
-    const products = await Product.find(filter).populate('genericName');
+    const products = await Product.find(filter).sort('genericName').populate('genericName');
     res.json(products)
   } catch (err) {
     res.status(400).json('error')
