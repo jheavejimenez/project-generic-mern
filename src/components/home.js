@@ -28,7 +28,7 @@ function Home() {
   return (
     <SuperContainer>
       <Container>
-        <Logo src={atmosmed} alt={"AtmosMed Pharmacy"}/>
+        <Logo src={atmosmed} alt={"AtmosMed Pharmacy"} onClick={() => setQuery("")}/>
         <div style={{display: "flex", flexDirection: "row"}}>
           <SearchBar value={query} onChange={e => setQuery(e.target.value)}/>
           <BarcodeIcon onClick={() => setCamera(!camera)} active={camera}>!i||!</BarcodeIcon>
