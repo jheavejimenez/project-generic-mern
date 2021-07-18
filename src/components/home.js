@@ -119,6 +119,7 @@ display: flex;
 align-items: center;
 justify-content: center;
 flex-direction: column;
+text-align: center;
 
 ${props => props.cheapest && `
 background-color: #00A2FF;
