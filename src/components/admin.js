@@ -116,6 +116,7 @@ function ModelScreen({modelName, fields, find, create, update, destroy, getObjec
                 ))}
                 <SubmitButton type={"submit"}>Save</SubmitButton>
                 <CancelButton onClick={() => {
+                  dispatch({type: "clear"});
                   setChangeFormActive(false);
                   setSelectedObject(null);
                 }}>
