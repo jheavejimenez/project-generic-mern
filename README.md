@@ -71,7 +71,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 ### Contributors
 
-Jheave Jimenez (Software Engineer) - jimenezjheave123@gmail.com
-Kem Nicoline Cervantes (UI/UX Designer) - nicole@atmosclouds.com
-Ejay Versoza (Product Owner) - ephraimjohn.verzosa@gmail.com
-Aiah Agustin (Pharmacist) - Aiahthessa16@gmail.com
+- Jheave Jimenez (Software Engineer) - jimenezjheave123@gmail.com
+- Kem Nicoline Cervantes (UI/UX Designer) - nicole@atmosclouds.com
+- Ejay Versoza (Product Owner) - ephraimjohn.verzosa@gmail.com
+- Aiah Agustin (Pharmacist) - Aiahthessa16@gmail.com
